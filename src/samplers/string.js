@@ -59,15 +59,8 @@ function timeSample(min, max) {
   }).slice(1);
 }
 
-function defaultSample(min, max, _, pattern) {
+function defaultSample(min, max, _) {
   let string = 'string';
-  if (pattern && /^\/.*\/$/.test(pattern)) {
-    try {
-      string = new RandExp(pattern).gen(); // generate random string based on regex
-    } catch (e) {
-      console.error('invalid regex format');
-    }
-  }
   let res = ensureMinLength(string, min);
   if (max && res.length > max) {
     res = res.substring(0, max);
@@ -121,8 +114,20 @@ function relativeJsonPointerSample() {
   return '1/relative/json/pointer';
 }
 
-function regexSample() {
-  return '/regex/';
+function regexSample(min, max, _, pattern) {
+  let string = 'string';
+  if (pattern && /^\/.*\/$/.test(pattern)) {
+    try {
+      string = new RandExp(pattern).gen(); // generate random string based on regex
+    } catch (e) {
+      console.error('invalid regex format');
+    }
+  }
+  let res = ensureMinLength(string, min);
+  if (max && res.length > max) {
+    res = res.substring(0, max);
+  }
+  return res;
 }
 
 const stringFormats = {
@@ -150,8 +155,8 @@ const stringFormats = {
 
 export function sampleString(schema, options, spec, context) {
   let format = schema.format || 'default';
-  // let pattern = schema.pattern; // todo: add feature to support pattern
+  let pattern = schema.pattern;
   let sampler = stringFormats[format] || defaultSample;
   let propertyName = context && context.propertyName;
-  return sampler(schema.minLength | 0, schema.maxLength, propertyName, format);
+  return sampler(schema.minLength | 0, schema.maxLength, propertyName, pattern);
 }
