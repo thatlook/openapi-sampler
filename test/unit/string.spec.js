@@ -168,12 +168,18 @@ describe('sampleString', () => {
   );
 
   it('should return valid regex for regex', () => {
-    res = sampleString({ pattern: '0[xX][0-9a-fA-F]{40}' });
+    res = sampleString({ format: 'regex', pattern: '/0[xX][0-9a-fA-F]{40}/' });
     expect(res).to.match(/0[xX][0-9a-fA-F]{40}/);
   });
 
-  it.each(['0[xX][0-9a-fA-F]{40}'], 'should return valid %s', (pattern) => {
-    const schema = { type: 'string', pattern };
-    expect(ajv.compile(schema)(sampleString(schema))).to.be.true;
+  it('should return valid %s for regex pattern', () => {
+    const schema = {
+      type: 'string',
+      pattern: '/0[xX][0-9a-fA-F]{40}/',
+      format: 'regex',
+    };
+    const sample = sampleString(schema);
+    const a = ajv.compile(schema)(sample);
+    expect(a).to.be.true;
   });
 });
