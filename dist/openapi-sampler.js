@@ -1660,17 +1660,8 @@ function timeSample(min, max) {
   }).slice(1);
 }
 
-function defaultSample(min, max, _, pattern) {
+function defaultSample(min, max, _) {
   var string = 'string';
-
-  if (pattern) {
-    try {
-      string = new _randexp.default(pattern).gen(); // generate random string based on regex
-    } catch (e) {
-      console.error('invalid regex format');
-    }
-  }
-
   var res = (0, _utils.ensureMinLength)(string, min);
 
   if (max && res.length > max) {
@@ -1728,8 +1719,24 @@ function relativeJsonPointerSample() {
   return '1/relative/json/pointer';
 }
 
-function regexSample() {
-  return '/regex/';
+function regexSample(min, max, _, pattern) {
+  var string = 'string';
+
+  if (pattern && /^\/.*\/$/.test(pattern)) {
+    try {
+      string = new _randexp.default(pattern).gen(); // generate random string based on regex
+    } catch (e) {
+      console.error('invalid regex format');
+    }
+  }
+
+  var res = (0, _utils.ensureMinLength)(string, min);
+
+  if (max && res.length > max) {
+    res = res.substring(0, max);
+  }
+
+  return res;
 }
 
 var stringFormats = {

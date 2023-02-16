@@ -1,6 +1,6 @@
 {
   "name": "@jenjenjem/openapi-sampler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "fork of openapi-sampler to apply randexp for string generator",
   "main": "dist/openapi-sampler.js",
   "module": "src/openapi-sampler.js",
